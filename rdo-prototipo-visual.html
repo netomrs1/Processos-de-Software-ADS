@@ -1,0 +1,455 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>Diário de Obra Digital (RDO) - Protótipo Visual</title>
+<style>
+  /* ===================================================================
+     DEBT: Protótipo 100% estático (sem JS). Serve só para validar
+     layout, hierarquia visual e identidade da marca. Nenhum botão,
+     slider ou toggle aqui funciona de verdade.
+  =================================================================== */
+
+  :root {
+    --azul: #1D4F8C;
+    --cinza-fundo: #EDEEF0;
+    --cinza-escuro: #1C222B;
+    --amarelo: #F5A623;
+    --laranja: #E8590C;
+    --verde: #059669;
+    --vermelho: #DC2626;
+    --borda: #E2E5E9;
+  }
+
+  * { box-sizing: border-box; }
+
+  body {
+    margin: 0;
+    font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Arial, sans-serif;
+    background: var(--cinza-fundo);
+    color: #1f2937;
+    padding-bottom: 24px;
+  }
+
+  .hazard-stripe {
+    height: 8px;
+    width: 100%;
+    background-image: repeating-linear-gradient(135deg, var(--amarelo) 0 14px, #1C1917 14px 28px);
+  }
+
+  /* CABEÇALHO */
+  header {
+    background: var(--cinza-escuro);
+    color: white;
+    padding: 22px 16px 18px;
+    border-radius: 0 0 24px 24px;
+  }
+
+  .header-eyebrow {
+    font-size: 11px;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 0.15em;
+    color: var(--amarelo);
+    margin-bottom: 4px;
+  }
+
+  header h1 { font-size: 20px; margin: 0; font-weight: 800; }
+  header p { margin: 2px 0 0; font-size: 12px; color: #94a3b8; }
+
+  .header-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 10px;
+    margin-top: 16px;
+  }
+
+  .header-field {
+    background: rgba(255,255,255,0.1);
+    border-radius: 12px;
+    padding: 10px;
+    font-size: 13px;
+    font-weight: 600;
+  }
+
+  /* CARDS */
+  main {
+    padding: 16px;
+    display: flex;
+    flex-direction: column;
+    gap: 16px;
+  }
+
+  .card {
+    background: white;
+    border: 1px solid var(--borda);
+    border-radius: 16px;
+    padding: 16px;
+  }
+
+  .card-title {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    margin-bottom: 12px;
+    font-size: 13px;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+    color: #475569;
+  }
+
+  .card-title .icon-box {
+    width: 30px;
+    height: 30px;
+    border-radius: 8px;
+    background: rgba(29,79,140,0.1);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 15px;
+    flex-shrink: 0;
+  }
+
+  .subgroup-label {
+    font-size: 12px;
+    font-weight: 600;
+    color: #64748b;
+    margin: 0 0 8px;
+  }
+
+  /* CLIMA */
+  .clima-grid {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 8px;
+    margin-bottom: 16px;
+  }
+
+  .opcao {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 4px;
+    padding: 12px 4px;
+    border-radius: 12px;
+    border: 2px solid var(--borda);
+    color: #94a3b8;
+    font-size: 10px;
+    font-weight: 600;
+  }
+
+  .opcao .emoji { font-size: 20px; }
+
+  .opcao.selecionado {
+    border-color: var(--azul);
+    background: rgba(29,79,140,0.08);
+    color: var(--azul);
+  }
+
+  .divider {
+    border-top: 1px solid #f1f5f9;
+    margin: 16px 0 0;
+    padding-top: 16px;
+  }
+
+  .canteiro-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 8px;
+  }
+
+  .canteiro-opcao {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 6px;
+    padding: 12px;
+    border-radius: 12px;
+    border: 2px solid var(--borda);
+    color: #94a3b8;
+    font-weight: 700;
+    font-size: 13px;
+  }
+
+  .canteiro-opcao.selecionado {
+    border-color: var(--verde);
+    background: #ecfdf5;
+    color: var(--verde);
+  }
+
+  /* ETAPAS - barra de progresso puramente visual */
+  .etapa { margin-bottom: 14px; }
+  .etapa:last-child { margin-bottom: 0; }
+
+  .etapa-header {
+    display: flex;
+    justify-content: space-between;
+    font-size: 14px;
+    margin-bottom: 6px;
+  }
+
+  .etapa-header .nome { font-weight: 600; color: #334155; }
+  .etapa-header .valor { font-weight: 700; color: var(--azul); }
+
+  .barra-fundo {
+    width: 100%;
+    height: 8px;
+    background: #e2e8f0;
+    border-radius: 999px;
+    overflow: hidden;
+  }
+
+  .barra-preenchida {
+    height: 100%;
+    background: var(--azul);
+    border-radius: 999px;
+  }
+
+  /* MÃO DE OBRA */
+  .contador-linha {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 12px 0;
+    border-bottom: 1px solid #f1f5f9;
+  }
+
+  .contador-linha:last-child { border-bottom: none; }
+  .contador-linha .label { font-size: 14px; font-weight: 600; color: #334155; }
+
+  .contador-controles {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+  }
+
+  .contador-btn {
+    width: 34px;
+    height: 34px;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 16px;
+    font-weight: 700;
+  }
+
+  .contador-btn.menos { background: #f1f5f9; color: #475569; }
+  .contador-btn.mais { background: var(--azul); color: white; }
+
+  .contador-valor { width: 24px; text-align: center; font-weight: 700; font-size: 15px; }
+
+  /* OCORRÊNCIAS */
+  .campo-texto {
+    width: 100%;
+    min-height: 64px;
+    border: 1px solid var(--borda);
+    border-radius: 12px;
+    padding: 10px;
+    font-size: 14px;
+    color: #94a3b8;
+  }
+
+  .btn-anexar {
+    width: 100%;
+    margin-top: 12px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 8px;
+    padding: 12px;
+    border: 2px dashed #cbd5e1;
+    border-radius: 12px;
+    color: #64748b;
+    font-size: 14px;
+    font-weight: 600;
+  }
+
+  .fotos-grid {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 8px;
+    margin-top: 12px;
+  }
+
+  .foto-item {
+    aspect-ratio: 1 / 1;
+    background: #f1f5f9;
+    border: 1px solid var(--borda);
+    border-radius: 10px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    gap: 4px;
+    font-size: 9px;
+    color: #64748b;
+    text-align: center;
+  }
+
+  .paralisia-grupo {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 8px;
+  }
+
+  .pill {
+    padding: 8px 12px;
+    border-radius: 999px;
+    border: 2px solid var(--borda);
+    color: #94a3b8;
+    font-size: 12px;
+    font-weight: 700;
+  }
+
+  .pill.selecionado {
+    border-color: var(--laranja);
+    background: rgba(232,89,12,0.1);
+    color: var(--laranja);
+  }
+
+  /* BOTÃO SALVAR */
+  .btn-salvar {
+    width: 100%;
+    background: var(--azul);
+    color: white;
+    padding: 15px;
+    border-radius: 12px;
+    font-size: 14px;
+    font-weight: 700;
+    text-align: center;
+  }
+</style>
+</head>
+<body>
+
+  <header>
+    <div class="header-eyebrow">🦺 Diário de Obra Digital</div>
+    <h1>Residencial Vista do Vale</h1>
+    <p>Setor 4 - Lote 12, Bairro Industrial</p>
+
+    <div class="header-grid">
+      <div class="header-field">📅 02/09/2026</div>
+      <div class="header-field">Turno: Manhã</div>
+    </div>
+  </header>
+
+  <div class="hazard-stripe"></div>
+
+  <main>
+
+    <!-- CLIMA & CANTEIRO -->
+    <section class="card">
+      <div class="card-title"><span class="icon-box">☀️</span> Condições do Dia</div>
+
+      <p class="subgroup-label">Manhã</p>
+      <div class="clima-grid">
+        <div class="opcao selecionado"><span class="emoji">☀️</span>Ensolarado</div>
+        <div class="opcao"><span class="emoji">🌧️</span>Chuvoso</div>
+        <div class="opcao"><span class="emoji">☁️</span>Nublado</div>
+      </div>
+
+      <p class="subgroup-label">Tarde</p>
+      <div class="clima-grid">
+        <div class="opcao"><span class="emoji">☀️</span>Ensolarado</div>
+        <div class="opcao selecionado"><span class="emoji">🌧️</span>Chuvoso</div>
+        <div class="opcao"><span class="emoji">☁️</span>Nublado</div>
+      </div>
+
+      <div class="divider">
+        <p class="subgroup-label">Estado do Canteiro</p>
+        <div class="canteiro-grid">
+          <div class="canteiro-opcao selecionado">✅ Praticável</div>
+          <div class="canteiro-opcao">⛔ Impraticável</div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ETAPAS -->
+    <section class="card">
+      <div class="card-title"><span class="icon-box">📋</span> Progresso das Etapas</div>
+
+      <div class="etapa">
+        <div class="etapa-header"><span class="nome">Fundação</span><span class="valor">100%</span></div>
+        <div class="barra-fundo"><div class="barra-preenchida" style="width: 100%;"></div></div>
+      </div>
+      <div class="etapa">
+        <div class="etapa-header"><span class="nome">Estrutura</span><span class="valor">62%</span></div>
+        <div class="barra-fundo"><div class="barra-preenchida" style="width: 62%;"></div></div>
+      </div>
+      <div class="etapa">
+        <div class="etapa-header"><span class="nome">Alvenaria</span><span class="valor">35%</span></div>
+        <div class="barra-fundo"><div class="barra-preenchida" style="width: 35%;"></div></div>
+      </div>
+      <div class="etapa">
+        <div class="etapa-header"><span class="nome">Instalações</span><span class="valor">18%</span></div>
+        <div class="barra-fundo"><div class="barra-preenchida" style="width: 18%;"></div></div>
+      </div>
+      <div class="etapa">
+        <div class="etapa-header"><span class="nome">Acabamento</span><span class="valor">0%</span></div>
+        <div class="barra-fundo"><div class="barra-preenchida" style="width: 0%;"></div></div>
+      </div>
+    </section>
+
+    <!-- MÃO DE OBRA -->
+    <section class="card">
+      <div class="card-title"><span class="icon-box">👷</span> Contingente no Canteiro</div>
+
+      <div class="contador-linha">
+        <span class="label">Pedreiros</span>
+        <div class="contador-controles">
+          <div class="contador-btn menos">−</div>
+          <span class="contador-valor">4</span>
+          <div class="contador-btn mais">+</div>
+        </div>
+      </div>
+      <div class="contador-linha">
+        <span class="label">Serventes</span>
+        <div class="contador-controles">
+          <div class="contador-btn menos">−</div>
+          <span class="contador-valor">6</span>
+          <div class="contador-btn mais">+</div>
+        </div>
+      </div>
+      <div class="contador-linha">
+        <span class="label">Terceirizados</span>
+        <div class="contador-controles">
+          <div class="contador-btn menos">−</div>
+          <span class="contador-valor">2</span>
+          <div class="contador-btn mais">+</div>
+        </div>
+      </div>
+    </section>
+
+    <!-- OCORRÊNCIAS -->
+    <section class="card">
+      <div class="card-title"><span class="icon-box">⚠️</span> Ocorrências & Fotos</div>
+
+      <div class="campo-texto">Descreva observações relevantes do dia...</div>
+
+      <div class="btn-anexar">📷 Anexar Foto da Obra</div>
+
+      <div class="fotos-grid">
+        <div class="foto-item">🖼️<span>Foto_001.jpg</span></div>
+        <div class="foto-item">🖼️<span>Foto_002.jpg</span></div>
+      </div>
+
+      <div class="divider">
+        <p class="subgroup-label">Marcadores de Paralisação</p>
+        <div class="paralisia-grupo">
+          <div class="pill selecionado">Falta de Material</div>
+          <div class="pill">Chuva</div>
+          <div class="pill">Falta de Mão de Obra</div>
+          <div class="pill">Problema em Equipamento</div>
+        </div>
+      </div>
+    </section>
+
+    <div class="btn-salvar">💾 Salvar Relatório do Dia</div>
+
+  </main>
+
+</body>
+</html>
